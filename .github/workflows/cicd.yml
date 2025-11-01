@@ -2,7 +2,7 @@ name: CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
 
 jobs:
@@ -67,3 +67,4 @@ jobs:
           kubectl apply -f k8s/postgres.yaml
           sed "s|IMAGE_PLACEHOLDER|$IMAGE|g" k8s/deployment.yaml | kubectl apply -f -
           kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/ingress.yaml
