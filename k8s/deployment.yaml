@@ -21,15 +21,3 @@ spec:
           env:
             - name: NODE_ENV
               value: production
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: oc-client-backend
-  namespace: oc-client
-spec:
-  selector:
-    app: oc-client-backend
-  ports:
-    - port: 80
-      targetPort: 3001
