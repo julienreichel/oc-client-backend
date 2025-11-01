@@ -13,11 +13,13 @@ spec:
       labels:
         app: oc-client-backend
     spec:
+      imagePullSecrets:
+        - name: ghcr-creds
       containers:
         - name: app
           image: IMAGE_PLACEHOLDER
           ports:
-            - containerPort: 3001
+            - containerPort: 3000
           env:
             - name: NODE_ENV
               value: production
