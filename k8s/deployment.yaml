@@ -25,4 +25,4 @@ spec:
               value: production
           envFrom:
             - secretRef:
-                name: oc-provider-db
+                name: oc-client-db
