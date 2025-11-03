@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: oc-client-backend
-  namespace: oc-client
 spec:
   replicas: 1
   selector:
