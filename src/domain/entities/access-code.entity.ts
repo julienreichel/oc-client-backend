@@ -1,38 +1,41 @@
-export interface AccessCode {
-  code: string;
-  documentId: string;
-  createdAt: Date;
-  expiresAt?: Date;
-}
-
-export class AccessCodeEntity implements AccessCode {
+export class AccessCode {
   constructor(
     public readonly code: string,
     public readonly documentId: string,
-    public readonly createdAt: Date,
-    public readonly expiresAt?: Date,
-  ) {}
+    public readonly expiresAt: Date | null,
+  ) {
+    this.validate();
+  }
 
-  isExpired(): boolean {
-    if (!this.expiresAt) {
+  private validate(): void {
+    if (!this.code || this.code.trim() === '') {
+      throw new Error('AccessCode code cannot be empty');
+    }
+
+    if (!this.documentId || this.documentId.trim() === '') {
+      throw new Error('AccessCode documentId cannot be empty');
+    }
+
+    if (
+      this.expiresAt !== null &&
+      (!(this.expiresAt instanceof Date) || isNaN(this.expiresAt.getTime()))
+    ) {
+      throw new Error('AccessCode expiresAt must be a valid date or null');
+    }
+  }
+
+  isExpired(currentDate: Date): boolean {
+    if (this.expiresAt === null) {
       return false;
     }
-    return new Date() > this.expiresAt;
+    return currentDate > this.expiresAt;
   }
 
-  static create(documentId: string, expiresAt?: Date): AccessCodeEntity {
-    return new AccessCodeEntity(
-      this.generateCode(),
-      documentId,
-      new Date(),
-      expiresAt,
-    );
-  }
-
-  private static generateCode(): string {
-    return (
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15)
-    );
+  static create(
+    code: string,
+    documentId: string,
+    expiresAt: Date | null,
+  ): AccessCode {
+    return new AccessCode(code, documentId, expiresAt);
   }
 }
