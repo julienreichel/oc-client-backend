@@ -23,7 +23,16 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+OC Client Backend - A client-facing backend service in a two-backend architecture. Receives documents from a provider backend and serves them to clients via access codes. Built with NestJS using Clean Architecture patterns.
+
+## Architecture
+
+This project follows **Clean Architecture** principles:
+
+- **Domain Layer** (`src/domain/`): Business entities and repository interfaces
+- **Application Layer** (`src/application/`): Use cases and business logic orchestration
+- **Infrastructure Layer** (`src/infrastructure/`): Database implementations and external services
+- **Presentation Layer** (`src/adapters/`): HTTP controllers and DTOs
 
 ## Project setup
 
@@ -31,31 +40,81 @@
 $ npm install
 ```
 
-## Compile and run the project
+## Database Setup
+
+### Cluster Database (Production)
+
+The application connects to a PostgreSQL cluster database via `DATABASE_URL` environment variable.
 
 ```bash
-# development
-$ npm run start
+# Port-forward to cluster database for local testing
+$ npm run db:port-forward
 
-# watch mode
+# Run integration tests against cluster database
+$ npm run test:integration
+```
+
+### Database Migrations
+
+```bash
+# Generate Prisma client
+$ npm run db:generate
+
+# Apply migrations to cluster database
+$ npm run db:migrate
+
+# Reset database (development only)
+$ npm run db:reset
+```
+
+**Note:** When running migrations against cluster DB, make sure you have DATABASE_URL pointing to the cluster or use port-forward first.
+
+## Development
+
+```bash
+# development mode
 $ npm run start:dev
 
 # production mode
 $ npm run start:prod
 ```
 
-## Run tests
+## Testing
 
 ```bash
-# unit tests
-$ npm run test
+# unit tests (always run - no external dependencies)
+$ npm test
 
-# e2e tests
+# integration tests (requires DATABASE_URL)
+$ npm run test:integration
+
+# all tests including e2e
 $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
 ```
+
+### Testing Against Cluster Database
+
+1. **Setup port-forward to cluster PostgreSQL:**
+
+   ```bash
+   npm run db:port-forward
+   ```
+
+2. **Set DATABASE_URL in your environment:**
+
+   ```bash
+   export DATABASE_URL="postgresql://username:password@localhost:5432/dbname"
+   ```
+
+3. **Run integration tests:**
+   ```bash
+   npm run test:integration
+   ```
+
+**Note:** Integration tests are automatically skipped if `DATABASE_URL` is not set, with a clear warning message.
 
 ## Deployment
 
