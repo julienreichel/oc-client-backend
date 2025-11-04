@@ -37,11 +37,13 @@ This project follows **Clean Architecture** principles:
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+ and npm
 - kubectl configured for oc-client namespace
 - oc-infra PostgreSQL running locally
 
 ### Quick Setup
+
 ```bash
 # 1. Clone and install dependencies
 $ git clone <repository-url>
@@ -77,15 +79,17 @@ DATABASE_URL="postgresql://app:StrongLocalPass@localhost:5432/db?schema=public"
 ```
 
 **Prerequisites:**
+
 - oc-infra PostgreSQL running locally
 - kubectl configured for oc-client namespace
 
 **Quick Start:**
+
 ```bash
 # 1. Start port-forward to local database (in one terminal)
 $ npm run db:port-forward
 
-# 2. Apply migrations (in another terminal)  
+# 2. Apply migrations (in another terminal)
 $ npm run db:migrate
 
 # 3. Run integration tests
@@ -161,6 +165,7 @@ $ npm run test:cov
 ## Troubleshooting
 
 ### Port-Forward Issues
+
 ```bash
 # Check if kubectl is configured
 $ kubectl get pods -n oc-client
@@ -170,6 +175,7 @@ $ kubectl get svc -n oc-client pg
 ```
 
 ### Database Connection Issues
+
 ```bash
 # Test direct connection (after port-forward is running)
 $ psql postgresql://app:StrongLocalPass@localhost:5432/db
@@ -179,6 +185,7 @@ $ npm run db:migrate
 ```
 
 ### Test Issues
+
 ```bash
 # Run only unit tests (no database required)
 $ npm test -- --testPathIgnorePatterns="integration.spec.ts"

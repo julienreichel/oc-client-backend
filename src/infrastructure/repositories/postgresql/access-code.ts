@@ -47,14 +47,21 @@ export class PostgreSQLAccessCodeRepository implements AccessCodeRepository {
   }
 
   async findByDocumentId(documentId: string): Promise<AccessCode[]> {
-    const records = await this.prisma.accessCode.findMany({
-      where: { documentId },
-      orderBy: { expiresAt: 'asc' },
-    });
+    // Use raw SQL for proper null handling: nulls first, then by expiresAt ASC
+    const records = await this.prisma.$queryRaw<Array<{
+      code: string;
+      document_id: string;
+      expires_at: Date | null;
+    }>>`
+      SELECT code, document_id, expires_at 
+      FROM access_codes 
+      WHERE document_id = ${documentId}
+      ORDER BY expires_at ASC NULLS FIRST
+    `;
 
     return records.map(
       (record) =>
-        new AccessCode(record.code, record.documentId, record.expiresAt),
+        new AccessCode(record.code, record.document_id, record.expires_at),
     );
   }
 
