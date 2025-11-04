@@ -1,6 +1,6 @@
-import { IdGeneratorPort } from '../../domain/ports/id-generator.port';
+import { IdGenerator } from '../../domain/services/id-generator';
 
-export class FakeIdGenerator implements IdGeneratorPort {
+export class FakeIdGenerator implements IdGenerator {
   private sequence = 1;
 
   generate(): string {

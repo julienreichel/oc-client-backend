@@ -1,6 +1,6 @@
-import { ClockPort } from '../../domain/ports/clock.port';
+import { Clock } from '../../domain/services/clock';
 
-export class FakeClock implements ClockPort {
+export class FakeClock implements Clock {
   private currentTime: Date;
 
   constructor(initialTime?: Date) {

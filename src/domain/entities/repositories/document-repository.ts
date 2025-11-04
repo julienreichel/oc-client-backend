@@ -1,6 +1,6 @@
-import { Document } from '../entities/document';
+import { Document } from '../document';
 
-export interface DocumentRepositoryPort {
+export interface DocumentRepository {
   save(document: Document): Promise<Document>;
   findById(id: string): Promise<Document | null>;
   findAll(): Promise<Document[]>;

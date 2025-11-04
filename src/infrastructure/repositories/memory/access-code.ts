@@ -1,7 +1,7 @@
 import { AccessCode } from '../../../domain/entities/access-code';
-import { AccessCodeRepositoryPort } from '../../../domain/ports/access-code-repository.port';
+import { AccessCodeRepository as AccessCodeRepositoryInterface } from '../../../domain/entities/repositories/access-code-repository';
 
-export class AccessCodeRepository implements AccessCodeRepositoryPort {
+export class AccessCodeRepository implements AccessCodeRepositoryInterface {
   private accessCodes: Map<string, AccessCode> = new Map();
 
   save(accessCode: AccessCode): Promise<AccessCode> {

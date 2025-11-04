@@ -1,6 +1,6 @@
-import { AccessCode } from '../entities/access-code';
+import { AccessCode } from '../access-code';
 
-export interface AccessCodeRepositoryPort {
+export interface AccessCodeRepository {
   save(accessCode: AccessCode): Promise<AccessCode>;
   findByCode(code: string): Promise<AccessCode | null>;
   findAll(): Promise<AccessCode[]>;

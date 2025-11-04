@@ -1,12 +1,12 @@
 import { Document } from '../../domain/entities/document';
 import { AccessCode } from '../../domain/entities/access-code';
-import { DocumentRepositoryPort } from '../../domain/ports/document-repository.port';
-import { AccessCodeRepositoryPort } from '../../domain/ports/access-code-repository.port';
-import { ClockPort } from '../../domain/ports/clock.port';
-import { IdGeneratorPort } from '../../domain/ports/id-generator.port';
-import { AccessCodeGeneratorPort } from '../../domain/ports/access-code-generator.port';
-import { DocumentRepository } from '../../infrastructure/repositories/memory/document';
-import { AccessCodeRepository } from '../../infrastructure/repositories/memory/access-code';
+import { DocumentRepository } from '../../domain/entities/repositories/document-repository';
+import { AccessCodeRepository } from '../../domain/entities/repositories/access-code-repository';
+import { Clock } from '../../domain/services/clock';
+import { IdGenerator } from '../../domain/services/id-generator';
+import { AccessCodeGenerator } from '../../domain/services/access-code-generator';
+import { DocumentRepository as DocumentRepositoryImpl } from '../../infrastructure/repositories/memory/document';
+import { AccessCodeRepository as AccessCodeRepositoryImpl } from '../../infrastructure/repositories/memory/access-code';
 import { FakeClock } from '../../infrastructure/testing/fake-clock';
 import { FakeIdGenerator } from '../../infrastructure/testing/fake-id-generator';
 import { FakeAccessCodeGenerator } from '../../infrastructure/testing/fake-access-code-generator';
@@ -14,15 +14,15 @@ import { CreateDocumentAndAccessCodeUseCase } from './create-document-and-access
 
 describe('CreateDocumentAndAccessCodeUseCase', () => {
   let useCase: CreateDocumentAndAccessCodeUseCase;
-  let documentRepository: DocumentRepositoryPort;
-  let accessCodeRepository: AccessCodeRepositoryPort;
-  let clock: ClockPort;
-  let idGenerator: IdGeneratorPort;
-  let accessCodeGenerator: AccessCodeGeneratorPort;
+  let documentRepository: DocumentRepository;
+  let accessCodeRepository: AccessCodeRepository;
+  let clock: Clock;
+  let idGenerator: IdGenerator;
+  let accessCodeGenerator: AccessCodeGenerator;
 
   beforeEach(() => {
-    documentRepository = new DocumentRepository();
-    accessCodeRepository = new AccessCodeRepository();
+    documentRepository = new DocumentRepositoryImpl();
+    accessCodeRepository = new AccessCodeRepositoryImpl();
     clock = new FakeClock();
     idGenerator = new FakeIdGenerator();
     accessCodeGenerator = new FakeAccessCodeGenerator();

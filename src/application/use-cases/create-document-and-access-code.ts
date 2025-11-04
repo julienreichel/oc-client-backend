@@ -1,10 +1,10 @@
 import { Document } from '../../domain/entities/document';
 import { AccessCode } from '../../domain/entities/access-code';
-import { DocumentRepositoryPort } from '../../domain/ports/document-repository.port';
-import { AccessCodeRepositoryPort } from '../../domain/ports/access-code-repository.port';
-import { ClockPort } from '../../domain/ports/clock.port';
-import { IdGeneratorPort } from '../../domain/ports/id-generator.port';
-import { AccessCodeGeneratorPort } from '../../domain/ports/access-code-generator.port';
+import { DocumentRepository } from '../../domain/entities/repositories/document-repository';
+import { AccessCodeRepository } from '../../domain/entities/repositories/access-code-repository';
+import { Clock } from '../../domain/services/clock';
+import { IdGenerator } from '../../domain/services/id-generator';
+import { AccessCodeGenerator } from '../../domain/services/access-code-generator';
 
 export interface CreateDocumentAndAccessCodeInput {
   title: string;
@@ -20,11 +20,11 @@ export class CreateDocumentAndAccessCodeUseCase {
   private static readonly MAX_RETRY_ATTEMPTS = 10;
 
   constructor(
-    private readonly documentRepository: DocumentRepositoryPort,
-    private readonly accessCodeRepository: AccessCodeRepositoryPort,
-    private readonly clock: ClockPort,
-    private readonly idGenerator: IdGeneratorPort,
-    private readonly accessCodeGenerator: AccessCodeGeneratorPort,
+    private readonly documentRepository: DocumentRepository,
+    private readonly accessCodeRepository: AccessCodeRepository,
+    private readonly clock: Clock,
+    private readonly idGenerator: IdGenerator,
+    private readonly accessCodeGenerator: AccessCodeGenerator,
   ) {}
 
   async execute(

@@ -1,6 +1,6 @@
-import { AccessCodeGeneratorPort } from '../../domain/ports/access-code-generator.port';
+import { AccessCodeGenerator } from '../../domain/services/access-code-generator';
 
-export class FakeAccessCodeGenerator implements AccessCodeGeneratorPort {
+export class FakeAccessCodeGenerator implements AccessCodeGenerator {
   private sequence = 1;
   private forcedCodes: string[] = [];
 
