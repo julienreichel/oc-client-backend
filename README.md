@@ -34,10 +34,27 @@ This project follows **Clean Architecture** principles:
 - **Infrastructure Layer** (`src/infrastructure/`): Database implementations and external services
 - **Presentation Layer** (`src/adapters/`): HTTP controllers and DTOs
 
-## Project setup
+## Getting Started
 
+### Prerequisites
+- Node.js 18+ and npm
+- kubectl configured for oc-client namespace
+- oc-infra PostgreSQL running locally
+
+### Quick Setup
 ```bash
+# 1. Clone and install dependencies
+$ git clone <repository-url>
+$ cd oc-client-backend
 $ npm install
+
+# 2. Start database port-forward (keep this running)
+$ npm run db:port-forward
+
+# 3. In another terminal: apply migrations and run tests
+$ npm run db:migrate
+$ npm run test:integration
+$ npm test  # runs all tests
 ```
 
 ## Database Setup
@@ -131,6 +148,35 @@ $ npm run test:cov
    ```
 
 **Note:** Integration tests are automatically skipped if `DATABASE_URL` is not set, with a clear warning message.
+
+## Troubleshooting
+
+### Port-Forward Issues
+```bash
+# Check if kubectl is configured
+$ kubectl get pods -n oc-client
+
+# Check if PostgreSQL service exists
+$ kubectl get svc -n oc-client pg
+```
+
+### Database Connection Issues
+```bash
+# Test direct connection (after port-forward is running)
+$ psql postgresql://app:StrongLocalPass@localhost:5432/db
+
+# Check if migrations need to be applied
+$ npm run db:migrate
+```
+
+### Test Issues
+```bash
+# Run only unit tests (no database required)
+$ npm test -- --testPathIgnorePatterns="integration.spec.ts"
+
+# Check if DATABASE_URL is loaded
+$ node -e "console.log(process.env.DATABASE_URL)"
+```
 
 ## Deployment
 
