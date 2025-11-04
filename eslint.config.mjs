@@ -48,6 +48,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off', // NestJS/supertest integration typing
       'max-lines-per-function': 'off', // Test files can have long describe blocks
     },
   },

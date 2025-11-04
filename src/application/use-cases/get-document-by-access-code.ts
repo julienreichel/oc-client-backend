@@ -1,6 +1,13 @@
 import { DocumentRepository } from '../../domain/entities/repositories/document-repository';
 import { AccessCodeRepository } from '../../domain/entities/repositories/access-code-repository';
 import { Clock } from '../../domain/services/clock';
+import {
+  NotFoundError,
+  AccessCodeExpiredError,
+} from '../../domain/errors/errors';
+
+// Re-export errors for backward compatibility
+export { NotFoundError, AccessCodeExpiredError };
 
 export interface GetDocumentByAccessCodeInput {
   code: string;
@@ -10,20 +17,6 @@ export interface GetDocumentByAccessCodeOutput {
   title: string;
   content: string;
   createdAt: Date;
-}
-
-export class NotFoundError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'NotFoundError';
-  }
-}
-
-export class AccessCodeExpiredError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'AccessCodeExpiredError';
-  }
 }
 
 export class GetDocumentByAccessCodeUseCase {
