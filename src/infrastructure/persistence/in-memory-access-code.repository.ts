@@ -13,6 +13,10 @@ export class InMemoryAccessCodeRepository implements AccessCodeRepositoryPort {
     return Promise.resolve(this.accessCodes.get(code) || null);
   }
 
+  async findAll(): Promise<AccessCode[]> {
+    return Promise.resolve(Array.from(this.accessCodes.values()));
+  }
+
   // Test helper methods
   clear(): void {
     this.accessCodes.clear();

@@ -9,8 +9,12 @@ export class InMemoryDocumentRepository implements DocumentRepositoryPort {
     return Promise.resolve(document);
   }
 
-  findById(id: string): Promise<Document | null> {
+  async findById(id: string): Promise<Document | null> {
     return Promise.resolve(this.documents.get(id) || null);
+  }
+
+  async findAll(): Promise<Document[]> {
+    return Promise.resolve(Array.from(this.documents.values()));
   }
 
   // Test helper methods
