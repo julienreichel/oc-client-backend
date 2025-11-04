@@ -48,10 +48,13 @@ $ git clone <repository-url>
 $ cd oc-client-backend
 $ npm install
 
-# 2. Start database port-forward (keep this running)
+# 2. Copy the test environment template
+$ cp .env.test.example .env
+
+# 3. Start database port-forward (keep this running)
 $ npm run db:port-forward
 
-# 3. In another terminal: apply migrations and run tests
+# 4. In another terminal: apply migrations and run tests
 $ npm run db:migrate
 $ npm run test:integration
 $ npm test  # runs all tests
@@ -61,7 +64,13 @@ $ npm test  # runs all tests
 
 ### Local Development
 
-The `.env` file contains local development database configuration that matches the oc-infra setup:
+Copy the test environment template to create your local `.env` file:
+
+```bash
+$ cp .env.test.example .env
+```
+
+This contains local development database configuration that matches the oc-infra setup:
 
 ```
 DATABASE_URL="postgresql://app:StrongLocalPass@localhost:5432/db?schema=public"

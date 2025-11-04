@@ -36,7 +36,8 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # dotenv environment variable files
-# .env is committed for local development (contains non-secret local credentials)
+# NEVER commit .env files - use .env.test.example as template
+.env
 .env.development.local
 .env.test.local
 .env.production.local
