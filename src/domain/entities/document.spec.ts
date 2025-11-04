@@ -1,4 +1,4 @@
-import { Document } from './document.entity';
+import { Document } from './document';
 
 describe('Document', () => {
   const validId = '123e4567-e89b-12d3-a456-426614174000';

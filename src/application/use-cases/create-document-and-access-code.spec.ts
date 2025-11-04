@@ -1,16 +1,16 @@
-import { Document } from '../../domain/entities/document.entity';
-import { AccessCode } from '../../domain/entities/access-code.entity';
+import { Document } from '../../domain/entities/document';
+import { AccessCode } from '../../domain/entities/access-code';
 import { DocumentRepositoryPort } from '../../domain/ports/document-repository.port';
 import { AccessCodeRepositoryPort } from '../../domain/ports/access-code-repository.port';
 import { ClockPort } from '../../domain/ports/clock.port';
 import { IdGeneratorPort } from '../../domain/ports/id-generator.port';
 import { AccessCodeGeneratorPort } from '../../domain/ports/access-code-generator.port';
-import { InMemoryDocumentRepository } from '../../infrastructure/persistence/in-memory-document.repository';
-import { InMemoryAccessCodeRepository } from '../../infrastructure/persistence/in-memory-access-code.repository';
-import { FakeClock } from '../../infrastructure/persistence/fake-clock';
-import { FakeIdGenerator } from '../../infrastructure/persistence/fake-id-generator';
-import { FakeAccessCodeGenerator } from '../../infrastructure/persistence/fake-access-code-generator';
-import { CreateDocumentAndAccessCodeUseCase } from './create-document-and-access-code.use-case';
+import { DocumentRepository } from '../../infrastructure/repositories/memory/document';
+import { AccessCodeRepository } from '../../infrastructure/repositories/memory/access-code';
+import { FakeClock } from '../../infrastructure/testing/fake-clock';
+import { FakeIdGenerator } from '../../infrastructure/testing/fake-id-generator';
+import { FakeAccessCodeGenerator } from '../../infrastructure/testing/fake-access-code-generator';
+import { CreateDocumentAndAccessCodeUseCase } from './create-document-and-access-code';
 
 describe('CreateDocumentAndAccessCodeUseCase', () => {
   let useCase: CreateDocumentAndAccessCodeUseCase;
@@ -21,8 +21,8 @@ describe('CreateDocumentAndAccessCodeUseCase', () => {
   let accessCodeGenerator: AccessCodeGeneratorPort;
 
   beforeEach(() => {
-    documentRepository = new InMemoryDocumentRepository();
-    accessCodeRepository = new InMemoryAccessCodeRepository();
+    documentRepository = new DocumentRepository();
+    accessCodeRepository = new AccessCodeRepository();
     clock = new FakeClock();
     idGenerator = new FakeIdGenerator();
     accessCodeGenerator = new FakeAccessCodeGenerator();

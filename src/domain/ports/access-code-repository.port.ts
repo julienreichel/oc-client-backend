@@ -1,4 +1,4 @@
-import { AccessCode } from '../entities/access-code.entity';
+import { AccessCode } from '../entities/access-code';
 
 export interface AccessCodeRepositoryPort {
   save(accessCode: AccessCode): Promise<AccessCode>;

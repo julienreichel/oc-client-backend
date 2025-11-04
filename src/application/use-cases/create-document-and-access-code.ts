@@ -1,5 +1,5 @@
-import { Document } from '../../domain/entities/document.entity';
-import { AccessCode } from '../../domain/entities/access-code.entity';
+import { Document } from '../../domain/entities/document';
+import { AccessCode } from '../../domain/entities/access-code';
 import { DocumentRepositoryPort } from '../../domain/ports/document-repository.port';
 import { AccessCodeRepositoryPort } from '../../domain/ports/access-code-repository.port';
 import { ClockPort } from '../../domain/ports/clock.port';

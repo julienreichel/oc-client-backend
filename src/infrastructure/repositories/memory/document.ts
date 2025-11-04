@@ -1,7 +1,7 @@
-import { Document } from '../../domain/entities/document.entity';
-import { DocumentRepositoryPort } from '../../domain/ports/document-repository.port';
+import { Document } from '../../../domain/entities/document';
+import { DocumentRepositoryPort } from '../../../domain/ports/document-repository.port';
 
-export class InMemoryDocumentRepository implements DocumentRepositoryPort {
+export class DocumentRepository implements DocumentRepositoryPort {
   private documents: Map<string, Document> = new Map();
 
   save(document: Document): Promise<Document> {

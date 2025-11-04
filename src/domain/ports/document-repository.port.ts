@@ -1,4 +1,4 @@
-import { Document } from '../entities/document.entity';
+import { Document } from '../entities/document';
 
 export interface DocumentRepositoryPort {
   save(document: Document): Promise<Document>;

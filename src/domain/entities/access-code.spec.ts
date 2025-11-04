@@ -1,4 +1,4 @@
-import { AccessCode } from './access-code.entity';
+import { AccessCode } from './access-code';
 
 describe('AccessCode', () => {
   const validCode = 'ABC123XYZ';
