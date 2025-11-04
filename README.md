@@ -42,17 +42,33 @@ $ npm install
 
 ## Database Setup
 
-### Cluster Database (Production)
+### Local Development
 
-The application connects to a PostgreSQL cluster database via `DATABASE_URL` environment variable.
+The `.env` file contains local development database configuration that matches the oc-infra setup:
 
+```
+DATABASE_URL="postgresql://app:StrongLocalPass@localhost:5432/db?schema=public"
+```
+
+**Prerequisites:**
+- oc-infra PostgreSQL running locally
+- kubectl configured for oc-client namespace
+
+**Quick Start:**
 ```bash
-# Port-forward to cluster database for local testing
+# 1. Start port-forward to local database (in one terminal)
 $ npm run db:port-forward
 
-# Run integration tests against cluster database
+# 2. Apply migrations (in another terminal)  
+$ npm run db:migrate
+
+# 3. Run integration tests
 $ npm run test:integration
 ```
+
+### Production/Cluster Database
+
+In production, `DATABASE_URL` is provided via Kubernetes secrets (`envFrom: secretRef: name: db`).
 
 ### Database Migrations
 
