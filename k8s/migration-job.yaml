@@ -7,6 +7,8 @@ spec:
   activeDeadlineSeconds: 600 # Job timeout after 10 minutes
   template:
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull
       restartPolicy: Never
       containers:
         - name: migration
