@@ -13,10 +13,21 @@ spec:
       containers:
         - name: migration
           image: IMAGE_PLACEHOLDER
+          workingDir: /app
           command: ['sh', '-c']
           args:
             - |
-              set -e
+              set -euo pipefail
+
+              echo "PWD=$(pwd)"
+              echo "Listing /app and prisma:"
+              ls -la /app || true
+              ls -la /app/prisma || true
+              echo "package.json present?"
+              [ -f package.json ] && cat package.json | head -n 20 || echo "missing"
+              echo "Prisma version:"
+              npx prisma --version || true
+
               echo "Starting database migration..."
               echo "Environment: $NODE_ENV" 
               echo "Database URL configured: $([ ! -z "$DATABASE_URL" ] && echo "YES" || echo "NO")"
