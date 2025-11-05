@@ -4,7 +4,7 @@ import { spawn } from 'child_process';
 
 /**
  * Simple port-forward script for connecting to cluster PostgreSQL database.
- * 
+ *
  * Usage: npm run db:port-forward
  * This forwards localhost:5432 -> oc-client/pg:5432
  */
@@ -16,30 +16,35 @@ console.log('   Port mapping: localhost:5432 -> pg:5432');
 console.log('');
 
 // Check if kubectl is available
-const checkKubectl = spawn('kubectl', ['version', '--client'], { stdio: 'pipe' });
+const checkKubectl = spawn('kubectl', ['version', '--client'], {
+  stdio: 'pipe',
+});
 
 checkKubectl.on('error', () => {
-  console.error('❌ kubectl not found. Please install kubectl and configure access to your cluster.');
+  console.error(
+    '❌ kubectl not found. Please install kubectl and configure access to your cluster.',
+  );
   process.exit(1);
 });
 
 checkKubectl.on('exit', (code) => {
   if (code !== 0) {
-    console.error('❌ kubectl not working properly. Please check your cluster configuration.');
+    console.error(
+      '❌ kubectl not working properly. Please check your cluster configuration.',
+    );
     process.exit(1);
   }
 
   // Start the actual port-forward
   console.log('✅ kubectl found, starting port-forward...');
-  
-  const portForward = spawn('kubectl', [
-    'port-forward',
-    '-n', 'oc-client',
-    'svc/pg',
-    '5432:5432'
-  ], { 
-    stdio: ['ignore', 'pipe', 'pipe'] 
-  });
+
+  const portForward = spawn(
+    'kubectl',
+    ['port-forward', '-n', 'oc-client', 'svc/pg', '5432:5432'],
+    {
+      stdio: ['ignore', 'pipe', 'pipe'],
+    },
+  );
 
   portForward.stdout?.on('data', (data: Buffer) => {
     const output = data.toString();
