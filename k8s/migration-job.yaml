@@ -32,8 +32,8 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: db-secret
-                  key: database-url
+                  name: db
+                  key: DATABASE_URL
             - name: NODE_ENV
               value: 'production'
   backoffLimit: 3 # Retry up to 3 times on failure
