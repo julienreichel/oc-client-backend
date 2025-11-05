@@ -38,6 +38,7 @@ describe('PublicController', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api');
     app.useGlobalFilters(new DomainExceptionFilter());
     await app.init();
 

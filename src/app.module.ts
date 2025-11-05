@@ -4,11 +4,12 @@ import { HealthController } from './adapters/http/health.controller';
 import { DocumentController } from './adapters/http/document.controller';
 import { PublicController } from './adapters/http/public.controller';
 import { PersistenceModule } from './infrastructure/persistence.module';
+import { ConfigModule } from './config/config.module';
 import { CreateDocumentAndAccessCodeUseCase } from './application/use-cases/create-document-and-access-code';
 import { GetDocumentByAccessCodeUseCase } from './application/use-cases/get-document-by-access-code';
 
 @Module({
-  imports: [PersistenceModule],
+  imports: [ConfigModule, PersistenceModule],
   controllers: [HealthController, DocumentController, PublicController],
   providers: [
     AppService,

@@ -3,7 +3,7 @@ import { GetDocumentByAccessCodeUseCase } from '../../application/use-cases/get-
 import { GetDocumentResponse } from './dtos/get-document-response';
 import { DomainExceptionFilter } from './filters/domain-exception.filter';
 
-@Controller('api/public')
+@Controller('public')
 @UseFilters(DomainExceptionFilter)
 export class PublicController {
   constructor(
