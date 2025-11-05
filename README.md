@@ -86,12 +86,41 @@ npm run format
 
 ## Troubleshooting
 
+### K3D Cluster Issues
+
+If you get `connection refused` errors when running `npm run db:port-forward`:
+
+```bash
+# 1. Check if k3d cluster is running
+k3d cluster list
+
+# 2. If cluster exists but kubectl fails, restart it
+k3d cluster stop oc-local
+k3d cluster start oc-local
+
+# 3. Update kubeconfig if server address is corrupted
+k3d kubeconfig write oc-local --output ~/.kube/config
+
+# 4. Verify kubectl connectivity
+kubectl get nodes
+kubectl get svc -n oc-client
+```
+
+**Common Issue**: After Docker restarts, k3d clusters may have corrupted kubeconfig with invalid server addresses like `0.0.0.0:62142`. The steps above will fix this.
+
 ### Port-Forward Issues
 
 ```bash
-# Verify kubectl access
+# Verify kubectl access and PostgreSQL service
 kubectl get pods -n oc-client
 kubectl get svc -n oc-client pg
+
+# Test port-forward manually
+kubectl port-forward -n oc-client svc/pg 5432:5432
+
+# If port 5432 is busy, use alternative
+kubectl port-forward -n oc-client svc/pg 5433:5432
+# Then update DATABASE_URL port to :5433
 ```
 
 ### Database Issues
@@ -100,8 +129,15 @@ kubectl get svc -n oc-client pg
 # Test direct connection (after port-forward)
 psql postgresql://app:StrongLocalPass@localhost:5432/db
 
+# Check if database exists and has tables
+psql postgresql://app:StrongLocalPass@localhost:5432/db -c "\dt"
+
 # Run unit tests only (no DB)
 npm test -- --testPathIgnorePatterns="integration.spec.ts"
+
+# Reset database if schema is corrupted
+npm run db:reset
+npm run db:migrate
 ```
 
 ### Environment Issues
@@ -109,6 +145,29 @@ npm test -- --testPathIgnorePatterns="integration.spec.ts"
 ```bash
 # Check if DATABASE_URL is loaded
 node -e "console.log(process.env.DATABASE_URL)"
+
+# Verify .env file exists and is readable
+cat .env | grep DATABASE_URL
+
+# Test database connection from Node.js
+node -e "
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+prisma.\$queryRaw\`SELECT 1\`.then(() => console.log('✅ DB OK')).catch(console.error);
+"
+```
+
+### CI/CD Migration Issues
+
+If migrations fail in CI with "Job is invalid" or timeout errors:
+
+```bash
+# The reusable workflow in oc-infra now handles job cleanup automatically
+# But if you need to clean up manually:
+kubectl delete job oc-client-backend-migration -n oc-dev-client --ignore-not-found=true
+
+# Check migration job logs
+kubectl logs job/oc-client-backend-migration -n oc-dev-client
 ```
 
 ## License
