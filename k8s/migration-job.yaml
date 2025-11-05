@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: oc-client-backend-migration
+spec:
+  ttlSecondsAfterFinished: 300 # Clean up job after 5 minutes
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migration
+          image: IMAGE_PLACEHOLDER
+          command: ['npm', 'run', 'db:migrate']
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: database-url
+  backoffLimit: 3 # Retry up to 3 times on failure

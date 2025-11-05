@@ -50,6 +50,7 @@ jobs:
       app_kind: backend
       image_name: ghcr.io/julienreichel/oc-client-backend
       namespace: oc-client
+      run_migrations: true
     secrets: inherit
 
   deploy-dev:
@@ -60,4 +61,5 @@ jobs:
       app_kind: backend
       image_name: ghcr.io/julienreichel/oc-client-backend
       namespace: oc-dev-client
+      run_migrations: true
     secrets: inherit
