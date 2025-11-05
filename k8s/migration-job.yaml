@@ -15,17 +15,17 @@ spec:
           args:
             - |
               set -e
-              echo "🔄 Starting database migration..."
-              echo "📊 Environment: $NODE_ENV" 
-              echo "🔗 Database URL configured: $([ ! -z "$DATABASE_URL" ] && echo "YES" || echo "NO")"
+              echo "Starting database migration..."
+              echo "Environment: $NODE_ENV" 
+              echo "Database URL configured: $([ ! -z "$DATABASE_URL" ] && echo "YES" || echo "NO")"
 
-              echo "� Generating Prisma client..."
+              echo "Generating Prisma client..."
               npm run db:generate
 
-              echo "�📦 Running Prisma migration..."
+              echo "Running Prisma migration..."
               npm run db:migrate
 
-              echo "✅ Migration completed successfully"
+              echo "Migration completed successfully"
           env:
             - name: DATABASE_URL
               valueFrom:
