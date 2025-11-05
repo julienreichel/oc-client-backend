@@ -4,17 +4,36 @@ metadata:
   name: oc-client-backend-migration
 spec:
   ttlSecondsAfterFinished: 300 # Clean up job after 5 minutes
+  activeDeadlineSeconds: 600 # Job timeout after 10 minutes
   template:
     spec:
       restartPolicy: Never
       containers:
         - name: migration
           image: IMAGE_PLACEHOLDER
-          command: ['npm', 'run', 'db:migrate']
+          command: ['sh', '-c']
+          args:
+            - |
+              set -e
+              echo "🔄 Starting database migration..."
+              echo "📊 Environment: $NODE_ENV"
+              echo "🔗 Database URL configured: $([ ! -z "$DATABASE_URL" ] && echo "YES" || echo "NO")"
+              echo "📦 Running Prisma migration..."
+              npm run db:migrate
+              echo "✅ Migration completed successfully"
           env:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
                   name: db-secret
                   key: database-url
+            - name: NODE_ENV
+              value: 'production'
+          # Add startup probe to ensure container starts properly
+          startupProbe:
+            exec:
+              command: ['sh', '-c', 'echo "Container started"']
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 12
   backoffLimit: 3 # Retry up to 3 times on failure
