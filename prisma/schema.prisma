@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Document {
+  id        String   @id @db.VarChar(255)
+  title     String   @db.VarChar(500)
+  content   String   @db.Text
+  createdAt DateTime @map("created_at") @db.Timestamptz
+
+  // Relationship to access codes
+  accessCodes AccessCode[]
+
+  @@map("documents")
+}
+
+model AccessCode {
+  code       String    @id @db.VarChar(255)
+  documentId String    @map("document_id") @db.VarChar(255)
+  expiresAt  DateTime? @map("expires_at") @db.Timestamptz
+
+  // Foreign key relationship
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@map("access_codes")
+}

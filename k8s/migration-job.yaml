@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: oc-client-backend-migration
+spec:
+  ttlSecondsAfterFinished: 300 # Clean up job after 5 minutes
+  activeDeadlineSeconds: 600 # Job timeout after 10 minutes
+  template:
+    spec:
+      imagePullSecrets:
+        - name: ghcr-creds
+      restartPolicy: Never
+      containers:
+        - name: migration
+          image: IMAGE_PLACEHOLDER
+          workingDir: /app
+          command: ['sh', '-c']
+          args:
+            - |
+              set -euo pipefail
+
+              echo "Starting database migration..."
+              echo "Database URL configured: $([ ! -z "$DATABASE_URL" ] && echo "YES" || echo "NO")"
+
+              echo "Generating Prisma client..."
+              npm run db:generate
+
+              echo "Running Prisma migration..."
+              npm run db:migrate
+
+              echo "Migration completed successfully"
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db
+                  key: DATABASE_URL
+            - name: NODE_ENV
+              value: 'production'
+  backoffLimit: 3 # Retry up to 3 times on failure
