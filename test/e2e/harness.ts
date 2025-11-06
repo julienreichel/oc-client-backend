@@ -106,9 +106,12 @@ export async function resetDb(app: INestApplication): Promise<void> {
     prismaService = app.get<PrismaService>(PrismaService);
   }
 
-  // Reset database tables in dependency order
-  // Using raw SQL for performance and to handle cascading deletes properly
-  await prismaService.$executeRaw`TRUNCATE TABLE access_codes, documents RESTART IDENTITY CASCADE`;
+  // Reset database tables in dependency order to avoid deadlocks
+  // Truncate child tables first, then parent tables
+  await prismaService.$transaction(async (tx) => {
+    await tx.$executeRaw`TRUNCATE TABLE access_codes RESTART IDENTITY CASCADE`;
+    await tx.$executeRaw`TRUNCATE TABLE documents RESTART IDENTITY CASCADE`;
+  });
 }
 
 /**
@@ -135,25 +138,27 @@ export async function seedDb(
     prismaService = app.get<PrismaService>(PrismaService);
   }
 
-  // Create documents with access codes
-  if (data.documents) {
-    for (const doc of data.documents) {
-      await prismaService.document.create({
-        data: {
-          id: doc.id,
-          title: doc.title,
-          content: doc.content,
-          createdAt: new Date(),
-          accessCodes: {
-            create:
-              doc.accessCodes?.map((ac) => ({
-                code: ac.code,
-                expiresAt: ac.expiresAt,
-              })) || [],
+  // Create documents with access codes in a transaction for atomicity
+  if (data.documents && data.documents.length > 0) {
+    await prismaService.$transaction(async (tx) => {
+      for (const doc of data.documents!) {
+        await tx.document.create({
+          data: {
+            id: doc.id,
+            title: doc.title,
+            content: doc.content,
+            createdAt: new Date(),
+            accessCodes: {
+              create:
+                doc.accessCodes?.map((ac) => ({
+                  code: ac.code,
+                  expiresAt: ac.expiresAt,
+                })) || [],
+            },
           },
-        },
-      });
-    }
+        });
+      }
+    });
   }
 }
 
@@ -210,6 +215,9 @@ export async function createTestDocument(
       },
     ],
   });
+
+  // Small delay to ensure data is committed in CI environment
+  await new Promise((resolve) => setTimeout(resolve, 10));
 
   return {
     document: {

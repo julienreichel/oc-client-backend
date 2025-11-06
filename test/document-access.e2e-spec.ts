@@ -29,7 +29,7 @@ describe('Document Access (e2e)', () => {
     it('should return document when access code is valid', async () => {
       // Given: A document with a valid access code
       const testData = await createTestDocument(app, {
-        accessCode: 'valid-access-code',
+        accessCode: 'VALID123',
       });
 
       // When: Requesting the document with valid access code
