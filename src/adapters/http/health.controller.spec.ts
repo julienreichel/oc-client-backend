@@ -48,9 +48,12 @@ describe('HealthController', () => {
       const result = controller.health();
 
       // Then
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         status: 'ok',
       });
+      expect(result.timestamp).toMatch(
+        /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/,
+      );
       expect(mockPrismaService.$queryRaw).not.toHaveBeenCalled();
     });
   });

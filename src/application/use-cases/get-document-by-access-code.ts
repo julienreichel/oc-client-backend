@@ -1,6 +1,6 @@
-import { DocumentRepository } from '../../domain/entities/repositories/document-repository';
-import { AccessCodeRepository } from '../../domain/entities/repositories/access-code-repository';
-import { Clock } from '../../domain/services/clock';
+import type { DocumentRepository } from '../../domain/entities/repositories/document-repository';
+import type { AccessCodeRepository } from '../../domain/entities/repositories/access-code-repository';
+import type { Clock } from '../../domain/services/clock';
 import {
   NotFoundError,
   AccessCodeExpiredError,

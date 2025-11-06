@@ -1,30 +1,51 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
-import { App } from 'supertest/types';
-import { AppModule } from './../src/app.module';
+import {
+  createApp,
+  createRequest,
+  resetDb,
+  teardownHarness,
+} from './e2e/harness';
 
 describe('Health (e2e)', () => {
-  let app: INestApplication<App>;
+  let app: INestApplication;
+  let request: ReturnType<typeof createRequest>;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
-
-    app = moduleFixture.createNestApplication();
-    await app.init();
+  beforeAll(async () => {
+    app = await createApp();
+    request = createRequest(app);
   });
 
-  it('/health (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/health')
-      .expect(200)
-      .expect((res) => {
-        const body = res.body as { status: string; timestamp: string };
-        expect(body).toHaveProperty('status', 'ok');
-        expect(body).toHaveProperty('timestamp');
-        expect(typeof body.timestamp).toBe('string');
-      });
+  afterEach(async () => {
+    await resetDb(app);
+  });
+
+  afterAll(async () => {
+    await app?.close();
+    await teardownHarness();
+  });
+
+  describe('/api/health', () => {
+    it('should return ok status with timestamp', async () => {
+      // Given: A running application
+      // When: Requesting the health endpoint
+      const response = await request.get('/api/health').expect(200);
+
+      // Then: Should return health status
+      const body = response.body as { status: string; timestamp: string };
+      expect(body).toHaveProperty('status', 'ok');
+      expect(body).toHaveProperty('timestamp');
+      expect(typeof body.timestamp).toBe('string');
+    });
+  });
+
+  describe('/api/ready', () => {
+    it('should return ok status when database is available', async () => {
+      // Given: A running application with database connection
+      // When: Requesting the readiness endpoint
+      const response = await request.get('/api/ready').expect(200);
+
+      // Then: Should return ready status
+      expect(response.body).toHaveProperty('status', 'ready');
+    });
   });
 });

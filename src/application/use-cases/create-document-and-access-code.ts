@@ -1,10 +1,10 @@
 import { Document } from '../../domain/entities/document';
 import { AccessCode } from '../../domain/entities/access-code';
-import { DocumentRepository } from '../../domain/entities/repositories/document-repository';
-import { AccessCodeRepository } from '../../domain/entities/repositories/access-code-repository';
-import { Clock } from '../../domain/services/clock';
-import { IdGenerator } from '../../domain/services/id-generator';
-import { AccessCodeGenerator } from '../../domain/services/access-code-generator';
+import type { DocumentRepository } from '../../domain/entities/repositories/document-repository';
+import type { AccessCodeRepository } from '../../domain/entities/repositories/access-code-repository';
+import type { Clock } from '../../domain/services/clock';
+import type { IdGenerator } from '../../domain/services/id-generator';
+import type { AccessCodeGenerator } from '../../domain/services/access-code-generator';
 
 export interface CreateDocumentAndAccessCodeInput {
   title: string;
@@ -13,6 +13,7 @@ export interface CreateDocumentAndAccessCodeInput {
 }
 
 export interface CreateDocumentAndAccessCodeOutput {
+  id: string;
   accessCode: string;
 }
 
@@ -58,7 +59,10 @@ export class CreateDocumentAndAccessCodeUseCase {
     const accessCodeEntity = new AccessCode(accessCode, documentId, expiresAt);
     await this.accessCodeRepository.save(accessCodeEntity);
 
-    return { accessCode };
+    return {
+      id: documentId,
+      accessCode,
+    };
   }
 
   private validateInput(input: CreateDocumentAndAccessCodeInput): void {

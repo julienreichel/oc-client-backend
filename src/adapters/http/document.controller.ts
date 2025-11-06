@@ -30,6 +30,7 @@ export class DocumentController {
     });
 
     return {
+      id: result.id,
       accessCode: result.accessCode,
     };
   }

@@ -147,11 +147,11 @@ describe('PublicController', () => {
         // When
         const response = await request(app.getHttpServer())
           .get('/api/public/EXPIRED123')
-          .expect(404);
+          .expect(410);
 
         // Then
         expect(response.body).toMatchObject({
-          statusCode: 404,
+          statusCode: 410,
           error: 'ACCESS_CODE_EXPIRED',
           message: 'Access code has expired',
         });
@@ -237,11 +237,11 @@ describe('PublicController', () => {
         // When
         const response = await request(app.getHttpServer())
           .get('/api/public/JUSTEXPIRED')
-          .expect(404);
+          .expect(410);
 
         // Then
         expect(response.body).toMatchObject({
-          statusCode: 404,
+          statusCode: 410,
           error: 'ACCESS_CODE_EXPIRED',
           message: 'Access code has expired',
         });

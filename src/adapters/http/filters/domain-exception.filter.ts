@@ -26,7 +26,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
       status = HttpStatus.NOT_FOUND;
       errorCode = 'NOT_FOUND';
     } else if (exception instanceof AccessCodeExpiredError) {
-      status = HttpStatus.NOT_FOUND; // Treat expired codes as not found for security
+      status = HttpStatus.GONE; // Resource existed but is no longer available
       errorCode = 'ACCESS_CODE_EXPIRED';
     } else {
       status = HttpStatus.INTERNAL_SERVER_ERROR;

@@ -11,6 +11,7 @@ import { DatabaseConnectionExceptionFilter } from './filters/database-connection
 
 export interface HealthResponse {
   status: 'ok';
+  timestamp: string;
 }
 
 export interface ReadinessResponse {
@@ -29,7 +30,10 @@ export class HealthController {
   @Get('health')
   @HttpCode(HttpStatus.OK)
   health(): HealthResponse {
-    return { status: 'ok' };
+    return {
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+    };
   }
 
   @Get('ready')

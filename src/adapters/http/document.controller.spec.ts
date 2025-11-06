@@ -80,6 +80,7 @@ describe('DocumentController', () => {
 
       // Then
       expect(response.body).toEqual({
+        id: 'test-id-001',
         accessCode: 'AC000001',
       });
 
@@ -106,6 +107,7 @@ describe('DocumentController', () => {
 
       // Then
       expect(response.body).toEqual({
+        id: 'test-id-001',
         accessCode: 'AC000001',
       });
 
