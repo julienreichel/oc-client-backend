@@ -112,7 +112,7 @@ npm run test:cov           # Generate coverage report
 E2E tests require a PostgreSQL database and include:
 
 - **Document Ingest (E2E-2)**: Complete provider → client backend flow validation
-- **Document Access**: Client access code validation and expiration handling  
+- **Document Access**: Client access code validation and expiration handling
 - **Health Endpoints**: System status and readiness checks
 
 ### CI/CD Testing
@@ -124,6 +124,7 @@ The CI pipeline runs all test types:
 3. **Build**: Triggered only after all tests pass
 
 CI automatically:
+
 - Spins up PostgreSQL 15 service
 - Applies database migrations
 - Runs complete e2e test suite
