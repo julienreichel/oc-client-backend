@@ -15,9 +15,9 @@ if (!process.env.DEBUG) {
     // Filter out Prisma query engine logs during tests
     if (
       typeof args[0] === 'string' &&
-      (args[0].includes('Query engine') || 
-       args[0].includes('prisma:query') ||
-       args[0].includes('prisma:engine'))
+      (args[0].includes('Query engine') ||
+        args[0].includes('prisma:query') ||
+        args[0].includes('prisma:engine'))
     ) {
       return;
     }
