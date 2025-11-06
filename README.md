@@ -84,6 +84,51 @@ npm run lint
 npm run format
 ```
 
+## Testing
+
+The project includes comprehensive testing at multiple levels:
+
+### Test Types
+
+- **Unit Tests** (`npm test`): Fast, isolated tests with no external dependencies
+- **Integration Tests** (`npm run test:integration`): Test database interactions with real PostgreSQL
+- **E2E Tests** (`npm run test:e2e`): End-to-end testing of complete API flows
+
+### Local Testing Setup
+
+```bash
+# 1. Ensure database is running
+npm run db:port-forward
+
+# 2. Run all test types
+npm test                    # Unit tests (108 tests)
+npm run test:integration    # Integration tests with DB
+npm run test:e2e           # E2E tests (11 tests)
+npm run test:cov           # Generate coverage report
+```
+
+### E2E Test Requirements
+
+E2E tests require a PostgreSQL database and include:
+
+- **Document Ingest (E2E-2)**: Complete provider → client backend flow validation
+- **Document Access**: Client access code validation and expiration handling  
+- **Health Endpoints**: System status and readiness checks
+
+### CI/CD Testing
+
+The CI pipeline runs all test types:
+
+1. **Quality Gates Job**: Unit tests, linting, and build validation
+2. **E2E Tests Job**: Full integration testing with PostgreSQL service
+3. **Build**: Triggered only after all tests pass
+
+CI automatically:
+- Spins up PostgreSQL 15 service
+- Applies database migrations
+- Runs complete e2e test suite
+- Validates all endpoints and database persistence
+
 ## Troubleshooting
 
 ### K3D Cluster Issues
