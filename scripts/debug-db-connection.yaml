@@ -1,0 +1,126 @@
+# Debug Database Connection Pod
+# Use this to debug database connectivity issues in production
+# kubectl apply -f scripts/debug-db-connection.yaml -n oc-client
+# kubectl logs debug-db-connection -n oc-client -f
+# kubectl delete pod debug-db-connection -n oc-client
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-db-connection
+spec:
+  imagePullSecrets:
+    - name: ghcr-creds
+  restartPolicy: Never
+  containers:
+    - name: debug
+      image: ghcr.io/julienreichel/oc-client-backend:5c64f446a564f9e9dbb56032e9156c9d32cfac5b
+      workingDir: /app
+      command: ['sh', '-c']
+      args:
+        - |
+          set -euo pipefail
+
+          echo "=== Database Connection Debug ==="
+          echo "Timestamp: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+          echo "Pod: $(hostname)"
+          echo "Node version: $(node --version)"
+
+          # Check environment variables
+          echo ""
+          echo "=== Environment Check ==="
+          if [ -z "${DATABASE_URL:-}" ]; then
+            echo "❌ DATABASE_URL is not set"
+            exit 1
+          else
+            echo "✅ DATABASE_URL is configured"
+            # Show URL structure without exposing credentials
+            echo "URL structure: $(echo "$DATABASE_URL" | sed 's/:[^:@]*@/:***@/g')"
+          fi
+
+          # Test raw database connection
+          echo ""
+          echo "=== Raw Database Connection Test ==="
+          timeout 30 node -e "
+            const { PrismaClient } = require('@prisma/client');
+            console.log('Creating Prisma client...');
+            const prisma = new PrismaClient({
+              log: ['query', 'info', 'warn', 'error'],
+            });
+            
+            console.log('Testing basic query...');
+            prisma.\$queryRaw\`SELECT version() as version, current_database() as database, current_user as user\`
+              .then(result => {
+                console.log('✅ Database query successful:', result);
+                return prisma.\$queryRaw\`SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = 'public'\`;
+              })
+              .then(result => {
+                console.log('✅ Table count query successful:', result);
+                return prisma.\$queryRaw\`SHOW max_connections\`;
+              })
+              .then(result => {
+                console.log('✅ Connection config:', result);
+                process.exit(0);
+              })
+              .catch(err => {
+                console.error('❌ Database test failed:', err);
+                console.error('Error details:', {
+                  message: err.message,
+                  code: err.code,
+                  errno: err.errno,
+                  syscall: err.syscall
+                });
+                process.exit(1);
+              })
+              .finally(() => {
+                console.log('Disconnecting from database...');
+                return prisma.\$disconnect();
+              });
+          "
+
+          # Test Prisma migration status
+          echo ""
+          echo "=== Prisma Migration Status ==="
+          if npm run db:generate; then
+            echo "✅ Prisma client generation successful"
+            
+            echo "Checking migration history..."
+            npx prisma migrate status || echo "Migration status check failed"
+            
+            echo ""
+            echo "Current schema state..."
+            npx prisma db execute --stdin <<'EOF' || echo "Schema query failed"
+          SELECT 
+            schemaname,
+            tablename,
+            tableowner 
+          FROM pg_tables 
+          WHERE schemaname = 'public'
+          ORDER BY tablename;
+          EOF
+          else
+            echo "❌ Prisma client generation failed"
+          fi
+
+          echo ""
+          echo "=== Debug Complete ==="
+          echo "Timestamp: $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+
+          # Keep pod alive for manual inspection
+          echo "Keeping pod alive for 300 seconds for manual inspection..."
+          sleep 300
+      env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db
+              key: DATABASE_URL
+        - name: NODE_ENV
+          value: 'production'
+      resources:
+        requests:
+          memory: '128Mi'
+          cpu: '50m'
+        limits:
+          memory: '256Mi'
+          cpu: '200m'

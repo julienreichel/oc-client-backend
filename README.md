@@ -163,10 +163,6 @@ kubectl get svc -n oc-client pg
 
 # Test port-forward manually
 kubectl port-forward -n oc-client svc/pg 5432:5432
-
-# If port 5432 is busy, use alternative
-kubectl port-forward -n oc-client svc/pg 5433:5432
-# Then update DATABASE_URL port to :5433
 ```
 
 ### Database Issues
